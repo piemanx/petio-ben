@@ -4,6 +4,11 @@ on:
   push:
     branches:
       - master
+
+permissions:
+  packages: write
+  contents: read
+
 jobs:
   docker-aio:
     name: Docker Master Build
@@ -27,6 +32,8 @@ jobs:
       - name: Build Docker image
         run: docker build -t ghcr.io/${{ github.repository }}:latest -t ghcr.io/${{ github.repository }}:latest-${GITHUB_SHA::8} .
       - name: Docker login
-        run: echo "${{ secrets.GHCR_TOKEN }}" | docker login -u ${{ github.repository_owner }} --password-stdin ghcr.io
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
       - name: Push docker image
-        run: docker push ghcr.io/${{ github.repository }}:latest
+        run: |
+          docker push ghcr.io/${{ github.repository }}:latest
+          docker push ghcr.io/${{ github.repository }}:latest-${GITHUB_SHA::8}

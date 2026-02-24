@@ -9,7 +9,21 @@ jobs:
     name: Docker Preview Build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - name: Build Frontend
+        working-directory: frontend
+        run: |
+          npm ci --legacy-peer-deps
+          npm run build
+      - name: Build Admin
+        working-directory: admin
+        run: |
+          npm ci --legacy-peer-deps
+          npm run build
       - name: Build Docker image
         run: docker build -t ghcr.io/${{ github.repository }}:preview -t ghcr.io/${{ github.repository }}:preview-${GITHUB_SHA::8} .
       - name: Docker login

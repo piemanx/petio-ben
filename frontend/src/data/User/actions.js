@@ -117,15 +117,11 @@ export async function plexAuth(plexWindow) {
     "</div>" +
     "</div>";
   plexWindow.document.body.innerHTML = plex_oauth_loader;
-  try {
-    let pins = await getPins();
-    console.log(pins);
-    plexWindow.location.href = `https://app.plex.tv/auth/#!?clientID=df9e71a5-a6cd-488e-8730-aaa9195f7435&code=${pins.code}`;
-    let data = await waitForPin(plexWindow, pins.id);
-    return data;
-  } catch (err) {
-    throw err;
-  }
+  let pins = await getPins();
+  console.log(pins);
+  plexWindow.location.href = `https://app.plex.tv/auth/#!?clientID=df9e71a5-a6cd-488e-8730-aaa9195f7435&code=${pins.code}`;
+  let data = await waitForPin(plexWindow, pins.id);
+  return data;
 }
 
 async function waitForPin(plexWindow, id) {

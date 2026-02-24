@@ -1,60 +1,35 @@
-import React from "react";
+import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { ReactComponent as LeftArrow } from "../assets/svg/back.svg";
 import { ReactComponent as RightArrow } from "../assets/svg/forward.svg";
 import { throttle } from "lodash";
-// import CarouselLoading from "./CarouselLoading";
 
-class Carousel extends React.Component {
-  constructor(props) {
-    super(props);
+const Carousel = (props) => {
+  const [state, setState] = useState({
+    offset: 0,
+    pos: 0,
+    init: false,
+    width: false,
+    inView: false,
+    cardsPerView: 0,
+    wrapperWidth: 0,
+    cardWidth: 0,
+    max: 0,
+  });
 
-    this.state = {
-      offset: 0,
-      pos: 0,
-      init: false,
-      width: false,
-      inView: false,
-    };
+  const carouselRef = useRef(null);
+  const wrapperRef = useRef(null);
 
-    this.carouselRef = React.createRef();
-    this.wrapper = React.createRef();
-    this.next = this.next.bind(this);
-    this.prev = this.prev.bind(this);
-    this.init = this.init.bind(this);
-    this.scroll = throttle(this.scroll.bind(this), 1000);
-    this.isInViewport = throttle(this.isInViewport.bind(this), 1000);
-  }
-
-  componentDidMount() {
-    let page = document.querySelectorAll(".page-wrap")[0];
-    page.scrollTop = 0;
-    window.scrollTo(0, 0);
-    this.init();
-    window.addEventListener("resize", this.init);
-    page.addEventListener("scroll", this.isInViewport);
-    this.isInViewport();
-  }
-
-  componentDidUpdate(prevProps) {
-    if (this.props !== prevProps) {
-      this.init();
-    } else if (this.state.inView && !this.state.init) {
-      this.init();
-    }
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener("resize", this.init);
-    window.removeEventListener("resize", this.isInViewport);
-  }
-
-  init() {
-    if (!this.state.inView) {
+  const init = useCallback(() => {
+    if (!state.inView) {
       return;
     }
-    let carousel = this.carouselRef.current;
-    let wrapper = this.wrapper.current;
+    let carousel = carouselRef.current;
+    let wrapper = wrapperRef.current;
+    if (!carousel || !wrapper) return;
+
     let cards = carousel.getElementsByClassName("card");
+    if (cards.length === 0) return;
+
     let exampleCard = cards[0];
     let style = exampleCard
       ? exampleCard.currentStyle || window.getComputedStyle(exampleCard)
@@ -66,125 +41,156 @@ class Carousel extends React.Component {
     let cardsPerView = Math.floor(wrapperWidth / cardWidth);
     let max = carousel.scrollWidth - carousel.offsetWidth;
 
-    this.setState({
+    setState((prev) => ({
+      ...prev,
       cardsPerView: cardsPerView,
       wrapperWidth: wrapperWidth,
       cardWidth: cardWidth,
       init: true,
       width: carousel.offsetWidth,
       max: max,
-    });
-  }
+    }));
+  }, [state.inView]);
 
-  isInViewport() {
-    if (this.state.inView) {
+  const isInViewportRaw = () => {
+    if (state.inView) {
       let page = document.querySelectorAll(".page-wrap")[0];
-      page.removeEventListener("scroll", this.isInViewport);
+      if (page) page.removeEventListener("scroll", throttledIsInViewport);
       return;
     }
-    let carousel = this.wrapper.current;
+    let carousel = wrapperRef.current;
     if (!carousel) return;
     const top = carousel.getBoundingClientRect().top;
     const wH = window.innerHeight;
     if (top <= wH * 1.5) {
-      this.setState({
-        inView: true,
-      });
-    } else {
-      this.setState({
-        inView: this.state.inView ? true : false,
-      });
+      setState((prev) => ({ ...prev, inView: true }));
     }
-  }
+  };
 
-  scroll() {
-    let carousel = this.carouselRef.current;
+  const throttledIsInViewport = useMemo(
+    () => throttle(isInViewportRaw, 1000),
+    [state.inView] // Re-create if inView changes to capture new state
+  );
+
+  const scrollRaw = () => {
+    let carousel = carouselRef.current;
     if (!carousel) return;
-    let position = carousel.scrollLeft; //+ carousel.offsetWidth;
+    let position = carousel.scrollLeft;
     let max = carousel.scrollWidth - carousel.offsetWidth;
-    this.setState({
+    setState((prev) => ({
+      ...prev,
       width: carousel.offsetWidth,
       pos: position,
       max: max,
-    });
-  }
+    }));
+  };
 
-  next() {
-    let carousel = this.carouselRef.current;
-    let scrollAmount = this.state.cardWidth * this.state.cardsPerView;
+  const throttledScroll = useMemo(() => throttle(scrollRaw, 1000), []);
+
+  useEffect(() => {
+    let page = document.querySelectorAll(".page-wrap")[0];
+    if (page) {
+      page.scrollTop = 0;
+      page.addEventListener("scroll", throttledIsInViewport);
+    }
+    window.scrollTo(0, 0);
+    
+    window.addEventListener("resize", init);
+    
+    // Initial check
+    throttledIsInViewport();
+
+    return () => {
+      window.removeEventListener("resize", init);
+      if (page) page.removeEventListener("scroll", throttledIsInViewport);
+    };
+  }, [throttledIsInViewport, init]);
+
+  // Trigger init when inView changes to true
+  useEffect(() => {
+    if (state.inView && !state.init) {
+      init();
+    }
+  }, [state.inView, state.init, init]);
+
+  // Trigger init on props change (simulating componentDidUpdate check)
+  useEffect(() => {
+     init();
+  }, [props.children, init]);
+
+
+  const next = () => {
+    let carousel = carouselRef.current;
+    if (!carousel) return;
+    let scrollAmount = state.cardWidth * state.cardsPerView;
     let start = carousel.scrollLeft;
     let movement =
-      Math.floor((start + scrollAmount) / this.state.cardWidth) *
-      this.state.cardWidth;
+      Math.floor((start + scrollAmount) / state.cardWidth) * state.cardWidth;
     carousel.scrollTo({
       top: 0,
       left: movement,
       behavior: "smooth",
     });
-  }
+  };
 
-  prev() {
-    let carousel = this.carouselRef.current;
-    let scrollAmount = this.state.cardWidth * this.state.cardsPerView;
+  const prev = () => {
+    let carousel = carouselRef.current;
+    if (!carousel) return;
+    let scrollAmount = state.cardWidth * state.cardsPerView;
     let start = carousel.scrollLeft;
     let movement =
-      Math.floor((start - scrollAmount) / this.state.cardWidth) *
-      this.state.cardWidth;
+      Math.floor((start - scrollAmount) / state.cardWidth) * state.cardWidth;
     carousel.scrollTo({
       top: 0,
       left: movement,
       behavior: "smooth",
     });
-  }
+  };
 
-  render() {
-    const childrenWithProps = React.Children.map(
-      this.props.children,
-      (child) => {
-        if (React.isValidElement(child)) {
-          return React.cloneElement(child, {
-            pos: this.state.pos,
-            width: this.state.width ? this.state.width : 0,
-          });
-        }
-        return child;
-      }
-    );
-    return (
-      <div
-        className={`carousel--wrap ${
-          this.state.inView ? "visible" : "not-visible"
-        }`}
-        ref={this.wrapper}
-      >
-        <div className="carousel--controls">
-          <div
-            className={`carousel--controls--item carousel--prev ${
-              this.state.pos > 0 ? "" : "disabled"
-            }`}
-            onClick={this.prev}
-          >
-            <LeftArrow />
-          </div>
-          <div
-            className={`carousel--controls--item carousel--next ${
-              this.state.pos < this.state.max ? "" : "disabled"
-            }`}
-            onClick={this.next}
-          >
-            <RightArrow />
-          </div>
+  const childrenWithProps = React.Children.map(props.children, (child) => {
+    if (React.isValidElement(child)) {
+      return React.cloneElement(child, {
+        pos: state.pos,
+        width: state.width ? state.width : 0,
+      });
+    }
+    return child;
+  });
+
+  return (
+    <div
+      className={`carousel--wrap ${
+        state.inView ? "visible" : "not-visible"
+      }`}
+      ref={wrapperRef}
+    >
+      <div className="carousel--controls">
+        <div
+          className={`carousel--controls--item carousel--prev ${
+            state.pos > 0 ? "" : "disabled"
+          }`}
+          onClick={prev}
+        >
+          <LeftArrow />
         </div>
         <div
-          className={`carousel`}
-          ref={this.carouselRef}
-          onScroll={this.scroll}
+          className={`carousel--controls--item carousel--next ${
+            state.pos < state.max ? "" : "disabled"
+          }`}
+          onClick={next}
         >
-          <div className="carousel--inner">{childrenWithProps}</div>
+          <RightArrow />
         </div>
       </div>
-    );
-  }
-}
+      <div
+        className={`carousel`}
+        ref={carouselRef}
+        onScroll={throttledScroll}
+      >
+        <div className="carousel--inner">{childrenWithProps}</div>
+      </div>
+    </div>
+  );
+};
 
 export default Carousel;

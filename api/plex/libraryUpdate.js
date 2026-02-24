@@ -294,7 +294,7 @@ class LibraryUpdate {
               hidden: lib.hidden,
             },
           },
-          { useFindAndModify: false }
+          {}
         );
       } catch (err) {
         logger.log("error", `LIB CRON: Error`);
@@ -993,7 +993,7 @@ class LibraryUpdate {
       );
       await Movie.findOneAndRemove(
         { _id: deleteMovie._id },
-        { useFindAndModify: false }
+        {}
       );
     }
     const deleteShows = await Show.find({
@@ -1006,7 +1006,7 @@ class LibraryUpdate {
       );
       await Show.findOneAndRemove(
         { _id: deleteShow._id },
-        { useFindAndModify: false }
+        {}
       );
     }
   }

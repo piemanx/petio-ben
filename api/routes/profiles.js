@@ -38,7 +38,7 @@ router.post("/save_profile", async (req, res) => {
             isDefault: false,
           },
         },
-        { new: true, useFindAndModify: false }
+        { new: true }
       );
     } catch {
       res.status(500).json({
@@ -63,7 +63,7 @@ router.post("/save_profile", async (req, res) => {
             isDefault: profile.isDefault,
           },
         },
-        { new: true, useFindAndModify: false }
+        { new: true }
       );
       res.status(200).json({
         message: "Profile updated",

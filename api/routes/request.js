@@ -118,7 +118,7 @@ router.post("/update", async (req, res) => {
           manualStatus: manualStatus,
         },
       },
-      { new: true, useFindAndModify: false }
+      { new: true }
     );
     if (servers && request.type === "movie") {
       await Promise.all(

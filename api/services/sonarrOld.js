@@ -254,7 +254,7 @@ class Sonarr {
               requestId: job.requestId,
             },
             { $push: { sonarrId: { [this.config.uuid]: sonarrId } } },
-            { useFindAndModify: false }
+            {}
           );
         } catch (err) {
           logger.log("info", err);
@@ -292,7 +292,7 @@ class Sonarr {
                 requestId: job.requestId,
               },
               { $push: { sonarrId: { [this.config.uuid]: sonarrId } } },
-              { useFindAndModify: false }
+              {}
             );
           } catch (err) {
             logger.log("info", err);
@@ -336,7 +336,7 @@ class Sonarr {
             requestId: job.id,
           },
           { $push: { sonarrId: { [this.config.uuid]: sonarrId } } },
-          { useFindAndModify: false }
+          {}
         );
       } catch (err) {
         console.log(err);

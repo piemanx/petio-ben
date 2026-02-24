@@ -1,50 +1,42 @@
-FROM node:16.3.0-alpine3.13 as builder
+FROM node:20-slim
 
-RUN apk add --no-cache git
-COPY ./ /source/
+RUN apt-get update && apt-get install -y tini tzdata && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /build
-RUN cp /source/petio.js . && \
-    cp /source/router.js . && \
-    cp /source/package.json . && \
-    npm install && \
-    cp -R /source/frontend . && \
-    cp -R /source/admin . && \
-    cp -R /source/api .
-
-WORKDIR /build/frontend
-RUN npm install && \
-    npm run build
-
-WORKDIR /build/admin
-RUN npm install --legacy-peer-deps && \
-    npm run build
-
-WORKDIR /build/api
-RUN npm install --legacy-peer-deps
-
-WORKDIR /build/views
-RUN mv /build/frontend/build /build/views/frontend && \
-    rm -rf /build/frontend && \
-    mv /build/admin/build /build/views/admin && \
-    rm -rf /build/admin && \
-    chmod -R u=rwX,go=rX /build
-
-FROM alpine:3.13
-
-EXPOSE 7777
-VOLUME ["/app/api/config", "/app/logs"]
 WORKDIR /app
-ENTRYPOINT ["/sbin/tini", "--"]
+RUN chown node:node /app
+
+# Switch to node user
+USER node
+
+# Copy API and Root files
+COPY --chown=node:node ./package.json ./petio.js ./router.js ./
+COPY --chown=node:node ./api ./api
+
+# Install Root and API dependencies
+RUN npm install --ignore-scripts
+WORKDIR /app/api
+RUN npm install --legacy-peer-deps --ignore-scripts
+
+# Return to root
+WORKDIR /app
+
+# Copy Pre-built Frontend and Admin from Host
+# Ensure you run 'npm run build' in ./frontend and ./admin locally first!
+COPY --chown=node:node ./frontend/build ./views/frontend
+COPY --chown=node:node ./admin/build ./views/admin
+
+# Expose Port
+EXPOSE 7777
+
+# Data Volumes
+VOLUME ["/app/api/config", "/app/logs"]
+
+ENTRYPOINT ["/usr/bin/tini", "--"]
 CMD [ "node", "petio.js" ]
-
-RUN apk add --no-cache nodejs tzdata tini
-
-COPY --from=builder /build/ /app/
 
 LABEL org.opencontainers.image.vendor="petio-team"
 LABEL org.opencontainers.image.url="https://github.com/petio-team/petio"
 LABEL org.opencontainers.image.documentation="https://docs.petio.tv/"
 LABEL org.opencontainers.image.licenses="MIT"
 
-HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD [ "wget", "--spider", "http://localhost:7777/health" ]
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD [ "node", "-e", "require('http').get('http://localhost:7777/health', (r) => {if (r.statusCode !== 200) throw new Error(r.statusCode)})" ]

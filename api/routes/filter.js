@@ -20,7 +20,7 @@ router.post("/update", async (req, res) => {
             data: movie_filter,
           },
         },
-        { useFindAndModify: false }
+        {}
       );
       logger.verbose("FILTER: Movie Filter updated");
     } else {
@@ -39,7 +39,7 @@ router.post("/update", async (req, res) => {
             data: tv_filter,
           },
         },
-        { useFindAndModify: false }
+        {}
       );
       logger.verbose("FILTER: TV Filter updated");
     } else {

@@ -35,7 +35,7 @@ class processRequest {
           let updatedUser = await User.findOneAndUpdate(
             { id: this.user.id },
             { $inc: { quotaCount: 1 } },
-            { new: true, useFindAndModify: false }
+            { new: true }
           );
           out.quota = updatedUser.quotaCount;
         }
@@ -407,7 +407,7 @@ class processRequest {
       {
         requestId: this.request.requestId,
       },
-      { useFindAndModify: false },
+      {},
       function (err, data) {
         if (err) {
           logger.log("error", `REQ: Archive Error`);

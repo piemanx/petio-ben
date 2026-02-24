@@ -207,7 +207,7 @@ router.post("/edit", adminRequired, async (req, res) => {
       {
         $set: userObj,
       },
-      { new: true, useFindAndModify: false }
+      { new: true }
     );
 
     res.json({
@@ -343,7 +343,7 @@ router.post("/thumb/:id", adminRequired, async (req, res) => {
           custom_thumb: req.newThumb,
         },
       },
-      { useFindAndModify: false }
+      {}
     );
     res.sendStatus(200);
   } catch (err) {

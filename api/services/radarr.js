@@ -255,7 +255,7 @@ class Radarr {
               requestId: job.requestId,
             },
             { $push: { radarrId: { [this.config.uuid]: radarrId } } },
-            { useFindAndModify: false }
+            {}
           );
         } catch (err) {
           logger.log(
@@ -298,7 +298,7 @@ class Radarr {
                 requestId: job.requestId,
               },
               { $push: { radarrId: { [this.config.uuid]: radarrId } } },
-              { useFindAndModify: false }
+              {}
             );
           } catch (err) {
             logger.log(
@@ -340,7 +340,7 @@ class Radarr {
             requestId: job.id,
           },
           { $push: { radarrId: { [this.config.uuid]: radarrId } } },
-          { useFindAndModify: false }
+          {}
         );
       } catch (err) {
         logger.log(

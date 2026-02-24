@@ -6,7 +6,7 @@ networks:
 
 services:
   petio:
-    image: ghcr.io/petio-team/petio:latest
+    build: .
     container_name: "petio"
     hostname: petio
     ports:

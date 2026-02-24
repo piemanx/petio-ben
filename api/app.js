@@ -6,7 +6,7 @@ require("dotenv/config");
 const fs = require("fs");
 const path = require("path");
 const pjson = require("./package.json");
-require("./node_modules/cache-manager/lib/stores/memory.js");
+
 const logger = require("./util/logger");
 const cluster = require("cluster");
 const trending = require("./tmdb/trending");
@@ -200,10 +200,7 @@ class Main {
   async connectDb() {
     logger.log("verbose", `API: Attempting database connection`);
     try {
-      await mongoose.connect(this.config.DB_URL, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      });
+      await mongoose.connect(this.config.DB_URL);
       logger.log("info", "API: Connected to Database");
     } catch (err) {
       logger.log("error", "API: Error connecting to database");
@@ -277,8 +274,6 @@ class Main {
         }
         logger.log("verbose", "API: Attempting mongo connection");
         await mongoose.connect(mongo + "/petio", {
-          useNewUrlParser: true,
-          useUnifiedTopology: true,
           socketTimeoutMS: 100,
         });
         mongoose.connection.close();

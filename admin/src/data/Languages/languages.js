@@ -188,4 +188,4 @@ const languages = [
   { code: "be", name: "Belarusian" },
 ];
 
-module.exports = languages;
+export default languages;

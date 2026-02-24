@@ -1,9 +1,9 @@
-# Petio 0.5.7
+# Petio 0.5.7 (Modernized)
 
 <p align="center">
-  <img src="https://img.shields.io/github/package-json/v/petio-team/petio/master?label=Latest">
-  <img src="https://img.shields.io/github/package-json/v/petio-team/petio/preview?label=Preview">
-  <img src="https://img.shields.io/github/package-json/v/petio-team/petio/dev?label=Development">
+  <img src="https://img.shields.io/badge/Node.js-20-green?logo=node.js">
+  <img src="https://img.shields.io/badge/React-18-blue?logo=react">
+  <img src="https://img.shields.io/badge/Docker-Multi--Stage-blue?logo=docker">
 </p>
 
 <p align="center">
@@ -15,29 +15,42 @@ Request, review and discover companion app for plex.
 
 Allow your users to interact with media both on and off your server with this app. Available as a docker image and also as binaries. Features a React frontend utilizing Redux and a Node JS express API and MongoDb database.
 
-<h2>Get Started</h2>
+## Modernization Status
+This repository has been modernized from the original Petio codebase.
+- **Runtime:** Updated to **Node.js 20** (LTS).
+- **Frontend:** Upgraded to **React 18** and migrated to **Vite** for faster builds.
+- **Architecture:** Key components refactored to **Functional Components** with Hooks.
+- **Testing:** Added **Vitest** for backend testing and **ESLint** for code quality.
+- **Docker:** Optimized multi-stage `Dockerfile` for smaller, secure builds.
 
-<h4>1. Installation</h4>
-This application can be installed to run in docker or as a standalone binary that can be configured to run as a service. See our docs below for guides on different setup methods.
-<ul><li>
-<p><a target="_blank" href="https://docs.petio.tv/install-guides/docker">Docker installation</a></p>
-  </li></ul>
+## Get Started
 
-Binary (executable file) guides
-**note:** this method requires a local mongodb instance to be installed
+### 1. Docker (Recommended)
+The Docker image is now built using a multi-stage process. You can build it locally or pull it if available.
 
-<ul>
-<li><a target="_blank" href="https://docs.petio.tv/install-guides/windows">Windows</a> </li>
-<li><a target="_blank" href="https://docs.petio.tv/install-guides/linux">Linux</a> </li>
-  <li><a target="_blank" href="https://docs.petio.tv/install-guides/macos">MacOS</a></li>
-</ul>
+```bash
+docker build -t petio:latest .
+docker run -d -p 7777:7777 --name petio petio:latest
+```
 
-<h4>2. Configuring Petio</h4>
-Configuring Petio is fairly straight forward but our docs cover the process, from initial server conenction to email / Sonarr / Radarr.
-<p><a target="_blank" href="https://docs.petio.tv/configuration/first-time-setup">How to configure Petio</a></p>
+### 2. Local Development
+**Prerequisites:** Node.js 20+, MongoDB.
 
-<h2>Frequently Asked Questions</h2>
-<p>Our FAQs can be found <a href="https://docs.petio.tv/troubleshooting/troubleshooting-faq">here</a></p>
+**Setup:**
+```bash
+# Install dependencies
+npm install
+cd api && npm install
+cd ../frontend && npm install
+cd ../admin && npm install
+
+# Start (Runs API + Frontend Proxy)
+npm start
+```
+
+## Documentation
+- [Technical Documentation](TECHNICAL_DOC.md): Architecture, project structure, and refactoring details.
+- [Todo](TODO.md): Remaining tasks and roadmap.
 
 <h2>Credits</h2>
 <h4>Attribution Credits</h4>

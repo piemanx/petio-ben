@@ -1,4 +1,4 @@
-name: Lint
+name: CI
 
 on:
   push:
@@ -36,3 +36,18 @@ jobs:
       - name: Run Lint
         working-directory: admin
         run: npm run lint
+
+  test-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js 20
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - name: Install dependencies
+        working-directory: api
+        run: npm ci --legacy-peer-deps
+      - name: Run Tests
+        working-directory: api
+        run: npm test -- --run

@@ -439,4 +439,14 @@ class Main {
   }
 }
 
-module.exports = new Main().init();
+const main = new Main();
+
+if (process.env.NODE_ENV !== "test") {
+  main.init();
+} else {
+  if (cluster.isMaster) {
+    main.setRoutes();
+  }
+}
+
+module.exports = main.e;

@@ -2,17 +2,8 @@ const express = require("express");
 const router = express.Router();
 const search = require("../tmdb/search");
 const MusicMeta = require("../meta/musicBrainz");
-const ExpressCache = require("express-cache-middleware");
-const cacheManager = require("cache-manager");
-
-// Cache for 1 day
-const cacheMiddleware = new ExpressCache(
-  cacheManager.caching({
-    store: "memory",
-    max: 100,
-    ttl: 86400,
-  })
-);
+const apicache = require("apicache");
+const cache = apicache.middleware;
 
 // Caching not applied needs setting up
 

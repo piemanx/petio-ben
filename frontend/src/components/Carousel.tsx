@@ -3,12 +3,16 @@ import { ReactComponent as LeftArrow } from "../assets/svg/back.svg";
 import { ReactComponent as RightArrow } from "../assets/svg/forward.svg";
 import { throttle } from "lodash";
 
-const Carousel = (props) => {
+interface CarouselProps {
+  children?: React.ReactNode;
+}
+
+const Carousel: React.FC<CarouselProps> = (props) => {
   const [state, setState] = useState({
     offset: 0,
     pos: 0,
     init: false,
-    width: false,
+    width: 0,
     inView: false,
     cardsPerView: 0,
     wrapperWidth: 0,
@@ -16,8 +20,8 @@ const Carousel = (props) => {
     max: 0,
   });
 
-  const carouselRef = useRef(null);
-  const wrapperRef = useRef(null);
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
   const init = useCallback(() => {
     if (!state.inView) {
@@ -30,12 +34,12 @@ const Carousel = (props) => {
     let cards = carousel.getElementsByClassName("card");
     if (cards.length === 0) return;
 
-    let exampleCard = cards[0];
+    let exampleCard = cards[0] as HTMLElement;
     let style = exampleCard
-      ? exampleCard.currentStyle || window.getComputedStyle(exampleCard)
+      ? window.getComputedStyle(exampleCard)
       : null;
     let cardWidth = exampleCard
-      ? exampleCard.offsetWidth + parseFloat(style.marginRight)
+      ? exampleCard.offsetWidth + parseFloat(style?.marginRight || "0")
       : 0;
     let wrapperWidth = wrapper.offsetWidth;
     let cardsPerView = Math.floor(wrapperWidth / cardWidth);
@@ -69,7 +73,7 @@ const Carousel = (props) => {
 
   const throttledIsInViewport = useMemo(
     () => throttle(isInViewportRaw, 1000),
-    [state.inView] // Re-create if inView changes to capture new state
+    [state.inView]
   );
 
   const scrollRaw = () => {
@@ -94,9 +98,9 @@ const Carousel = (props) => {
       page.addEventListener("scroll", throttledIsInViewport);
     }
     window.scrollTo(0, 0);
-    
+
     window.addEventListener("resize", init);
-    
+
     // Initial check
     throttledIsInViewport();
 
@@ -115,9 +119,8 @@ const Carousel = (props) => {
 
   // Trigger init on props change (simulating componentDidUpdate check)
   useEffect(() => {
-     init();
+    init();
   }, [props.children, init]);
-
 
   const next = () => {
     let carousel = carouselRef.current;
@@ -149,7 +152,7 @@ const Carousel = (props) => {
 
   const childrenWithProps = React.Children.map(props.children, (child) => {
     if (React.isValidElement(child)) {
-      return React.cloneElement(child, {
+      return React.cloneElement(child as React.ReactElement<any>, {
         pos: state.pos,
         width: state.width ? state.width : 0,
       });
@@ -159,9 +162,7 @@ const Carousel = (props) => {
 
   return (
     <div
-      className={`carousel--wrap ${
-        state.inView ? "visible" : "not-visible"
-      }`}
+      className={`carousel--wrap ${state.inView ? "visible" : "not-visible"}`}
       ref={wrapperRef}
     >
       <div className="carousel--controls">
@@ -182,11 +183,7 @@ const Carousel = (props) => {
           <RightArrow />
         </div>
       </div>
-      <div
-        className={`carousel`}
-        ref={carouselRef}
-        onScroll={throttledScroll}
-      >
+      <div className={`carousel`} ref={carouselRef} onScroll={throttledScroll}>
         <div className="carousel--inner">{childrenWithProps}</div>
       </div>
     </div>

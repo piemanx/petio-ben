@@ -8,13 +8,31 @@ import "react-lazy-load-image-component/src/effects/blur.css";
 
 import { ReactComponent as RequestIcon } from "../assets/svg/request.svg";
 
-const MovieCard = (props) => {
+interface Movie {
+  id: number | string;
+  on_server?: boolean;
+  title?: string;
+  imdb_id?: string;
+  poster_path?: string;
+  release_date?: string;
+}
+
+interface MovieCardProps {
+  movie: Movie;
+  width?: number;
+  view?: boolean;
+  msg?: (message: any) => void;
+  popular_count?: number | string;
+  character?: string;
+}
+
+const MovieCard: React.FC<MovieCardProps> = (props) => {
   const [inView, setInView] = useState(false);
   const [imgLoaded, setImgLoaded] = useState(false);
-  const cardRef = useRef(null);
+  const cardRef = useRef<HTMLDivElement>(null);
 
-  const api = useSelector((state) => state.api);
-  const user = useSelector((state) => state.user);
+  const api = useSelector((state: any) => state.api);
+  const user = useSelector((state: any) => state.user);
 
   useEffect(() => {
     if (inView) return;
@@ -22,7 +40,7 @@ const MovieCard = (props) => {
     const checkInView = () => {
       if (!cardRef.current) return;
       const left = cardRef.current.getBoundingClientRect().left;
-      if (left <= props.width * 2 || props.view) {
+      if (left <= (props.width || 0) * 2 || props.view) {
         setInView(true);
         getMovie();
       }
@@ -35,7 +53,6 @@ const MovieCard = (props) => {
     let movie = props.movie;
     let id = movie.id;
     if (!api.movie_lookup[id]) {
-      // check for cached
       if (!id) return false;
       Api.movie(id, true);
     }
@@ -56,16 +73,20 @@ const MovieCard = (props) => {
     };
     try {
       await User.request(requestData, user.current);
-      props.msg({
-        message: `New Request added: ${movie.title}`,
-        type: "good",
-      });
+      if (props.msg) {
+        props.msg({
+          message: `New Request added: ${movie.title}`,
+          type: "good",
+        });
+      }
       await User.getRequests();
     } catch (err) {
-      props.msg({
-        message: err,
-        type: "error",
-      });
+      if (props.msg) {
+        props.msg({
+          message: err,
+          type: "error",
+        });
+      }
     }
   };
 
@@ -110,7 +131,6 @@ const MovieCard = (props) => {
     <LazyLoadImage
       alt={movie.title}
       src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}
-      // effect="blur"
       onLoad={onImgLoad}
     />
   ) : (
@@ -121,7 +141,6 @@ const MovieCard = (props) => {
     />
   );
 
-  // Final render
   return (
     <div
       ref={cardRef}
@@ -129,13 +148,13 @@ const MovieCard = (props) => {
       data-key={movie.id}
       className={`card type--movie-tv ${
         props.movie.on_server || movie.on_server ? "on-server" : ""
-      } ${user.requests[movie.id] ? "requested" : ""} ${
+      } ${user.requests && user.requests[movie.id] ? "requested" : ""} ${
         imgLoaded ? "img-loaded" : "img-not-loaded"
       }`}
     >
       <div className="card--inner">
         <Link to={`/movie/${movie.id}`} className="full-link"></Link>
-        {!user.requests[movie.id] && !movie.on_server ? (
+        {(!user.requests || !user.requests[movie.id]) && !movie.on_server ? (
           <div className="quick-req" title="Request now" onClick={request}>
             <RequestIcon />
           </div>

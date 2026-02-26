@@ -3,20 +3,39 @@ import { Link } from "react-router-dom";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 
-const PersonCard = (props) => {
+interface KnownForItem {
+  id: number;
+  title: string;
+}
+
+interface Person {
+  id: number;
+  name: string;
+  gender?: number;
+  profile_path?: string | null;
+  known_for?: KnownForItem[];
+}
+
+interface PersonCardProps {
+  person: Person;
+  character?: string;
+}
+
+const PersonCard: React.FC<PersonCardProps> = ({ person, character }) => {
   const [imgLoaded, setImgLoaded] = useState(false);
 
   const onImgLoad = () => {
     setImgLoaded(true);
   };
 
-  let knownFor = null;
-  let person = props.person;
+  let knownFor: React.ReactNode[] | null = null;
+  
   if (!person || person.gender === 0) {
     return null;
   }
+  
   if (person.known_for && person.known_for.length) {
-    person.known_for.map((item) => {
+    knownFor = person.known_for.map((item) => {
       return (
         <Link key={`${item.id}__kf`} to={`/movie/${item.id}`}>
           {item.title}
@@ -51,8 +70,8 @@ const PersonCard = (props) => {
         <div className="text-wrap">
           <p className="title">{person.name}</p>
           {knownFor ? <p className="known-for">{knownFor}</p> : null}
-          {props.character ? (
-            <p className="character">{props.character}</p>
+          {character ? (
+            <p className="character">{character}</p>
           ) : null}
         </div>
       </div>

@@ -8,13 +8,32 @@ import "react-lazy-load-image-component/src/effects/blur.css";
 
 import { ReactComponent as RequestIcon } from "../assets/svg/request.svg";
 
-const TvCard = (props) => {
+interface Series {
+  id: number | string;
+  on_server?: boolean;
+  name?: string;
+  imdb_id?: string;
+  tvdb_id?: string | number;
+  poster_path?: string;
+  first_air_date?: string;
+}
+
+interface TvCardProps {
+  series: Series;
+  width?: number;
+  view?: boolean;
+  msg?: (message: any) => void;
+  popular_count?: number | string;
+  character?: string;
+}
+
+const TvCard: React.FC<TvCardProps> = (props) => {
   const [inView, setInView] = useState(false);
   const [imgLoaded, setImgLoaded] = useState(false);
-  const cardRef = useRef(null);
+  const cardRef = useRef<HTMLDivElement>(null);
 
-  const api = useSelector((state) => state.api);
-  const user = useSelector((state) => state.user);
+  const api = useSelector((state: any) => state.api);
+  const user = useSelector((state: any) => state.user);
 
   useEffect(() => {
     if (inView) return;
@@ -22,7 +41,7 @@ const TvCard = (props) => {
     const checkInView = () => {
       if (!cardRef.current) return;
       const left = cardRef.current.getBoundingClientRect().left;
-      if (left <= props.width * 2 || props.view) {
+      if (left <= (props.width || 0) * 2 || props.view) {
         setInView(true);
         getSeries();
       }
@@ -35,7 +54,6 @@ const TvCard = (props) => {
     let series = props.series;
     let id = series.id;
     if (!api.series_lookup[id]) {
-      // check for cached
       if (!id) return false;
       Api.series(id, true);
     }
@@ -57,16 +75,20 @@ const TvCard = (props) => {
 
     try {
       await User.request(requestData, user.current);
-      props.msg({
-        message: `New Request added: ${series.name}`,
-        type: "good",
-      });
+      if (props.msg) {
+        props.msg({
+          message: `New Request added: ${series.name}`,
+          type: "good",
+        });
+      }
       await User.getRequests();
     } catch (err) {
-      props.msg({
-        message: err,
-        type: "error",
-      });
+      if (props.msg) {
+        props.msg({
+          message: err,
+          type: "error",
+        });
+      }
     }
   };
 
@@ -106,15 +128,14 @@ const TvCard = (props) => {
 
   let img = series.poster_path ? (
     <LazyLoadImage
-      alt={series.title}
+      alt={series.name || series.title}
       src={`https://image.tmdb.org/t/p/w200${series.poster_path}`}
-      // effect="blur"
       onLoad={onImgLoad}
     />
   ) : (
     <LazyLoadImage
       src={`${window.location.pathname.replace(/\/$/, "")}/images/no-poster.jpg`}
-      alt={series.title}
+      alt={series.name || series.title}
       onLoad={onImgLoad}
     />
   );
@@ -125,12 +146,12 @@ const TvCard = (props) => {
       key={series.id}
       data-key={series.id}
       className={`card type--movie-tv ${series.on_server ? "on-server" : ""} ${
-        user.requests[series.id] ? "requested" : ""
+        user.requests && user.requests[series.id] ? "requested" : ""
       } ${imgLoaded ? "img-loaded" : "img-not-loaded"}`}
     >
       <div className="card--inner">
         <Link to={`/series/${series.id}`} className="full-link"></Link>
-        {!user.requests[series.id] && !series.on_server ? (
+        {(!user.requests || !user.requests[series.id]) && !series.on_server ? (
           <div className="quick-req" title="Request now" onClick={request}>
             <RequestIcon />
           </div>

@@ -1,85 +1,59 @@
+import { createSlice } from "@reduxjs/toolkit";
 import * as types from "../actionTypes";
 
-export default function (
-  state = {
-    current: false,
-    logged_in: false,
-    credentials: false,
-    library_index: false,
-    requests: false,
-    email: false,
-  },
-  action
-) {
-  switch (action.type) {
-    case types.LOGIN:
-      return {
-        ...state,
-        current: action.data.user,
-        logged_in: true,
-      };
+const initialState = {
+  current: false,
+  logged_in: false,
+  credentials: false,
+  library_index: false,
+  requests: false,
+  email: false,
+  reviews: {},
+};
 
-    case types.LOGOUT:
-      return {
-        ...state,
-        current: false,
-        logged_in: false,
-        credentials: false,
-      };
-
-    case types.CREDENTIALS:
-      return {
-        ...state,
-        credentials: action.credentials,
-      };
-
-    case types.CREDENTIALS_EMAIL:
-      return {
-        ...state,
-        email: action.credentials,
-      };
-
-    case types.LIBRARIES_INDEX:
-      return {
-        ...state,
-        library_index: action.libraries,
-      };
-
-    case types.LOGIN_ADMIN:
-      return {
-        ...state,
-        logged_in: true,
-        credentials: {
+const userSlice = createSlice({
+  name: "user",
+  initialState,
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(types.LOGIN, (state, action) => {
+        state.current = action.data.user;
+        state.logged_in = true;
+      })
+      .addCase(types.LOGOUT, (state) => {
+        state.current = false;
+        state.logged_in = false;
+        state.credentials = false;
+      })
+      .addCase(types.CREDENTIALS, (state, action) => {
+        state.credentials = action.credentials;
+      })
+      .addCase(types.CREDENTIALS_EMAIL, (state, action) => {
+        state.email = action.credentials;
+      })
+      .addCase(types.LIBRARIES_INDEX, (state, action) => {
+        state.library_index = action.libraries;
+      })
+      .addCase(types.LOGIN_ADMIN, (state, action) => {
+        state.logged_in = true;
+        state.credentials = {
           plexToken: action.credentials.token,
-        },
-        current: action.credentials.username,
-      };
+        };
+        state.current = action.credentials.username;
+      })
+      .addCase(types.GET_REQUESTS, (state, action) => {
+        state.requests = action.requests;
+      })
+      .addCase(types.GET_REVIEWS, (state, action) => {
+        state.reviews[action.id] = action.reviews;
+      })
+      .addCase(types.UPDATE_QUOTA, (state, action) => {
+        if (state.current) {
+          state.current.quotaCount = action.quota;
+        }
+      });
+  },
+});
 
-    case types.GET_REQUESTS:
-      return {
-        ...state,
-        requests: action.requests,
-      };
-
-    case types.GET_REVIEWS:
-      return {
-        ...state,
-        reviews: {
-          ...state.reviews,
-          [action.id]: action.reviews,
-        },
-      };
-
-    case types.UPDATE_QUOTA:
-      return {
-        ...state,
-        current: {
-          ...state.current,
-          quotaCount: action.quota,
-        },
-      };
-
-    default:
-      return state;
-  }
-}
+export default userSlice.reducer;

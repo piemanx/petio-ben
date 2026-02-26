@@ -2,10 +2,22 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 
-const CompanyCard = (props) => {
+interface Company {
+  id: number | string;
+  name: string;
+  logo_path?: string | null;
+}
+
+interface CompanyCardProps {
+  company: Company;
+  width?: number;
+  view?: boolean;
+}
+
+const CompanyCard: React.FC<CompanyCardProps> = (props) => {
   const [inView, setInView] = useState(false);
   const [imgLoaded, setImgLoaded] = useState(false);
-  const cardRef = useRef(null);
+  const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (inView) return;
@@ -13,7 +25,7 @@ const CompanyCard = (props) => {
     const checkInView = () => {
       if (!cardRef.current) return;
       const left = cardRef.current.getBoundingClientRect().left;
-      if (left <= props.width * 2 || props.view) {
+      if (left <= (props.width || 0) * 2 || props.view) {
         setInView(true);
       }
     };

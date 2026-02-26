@@ -1,17 +1,17 @@
-import { createStore, applyMiddleware } from 'redux';
-import rootReducer from './reducers';
-import thunk from 'redux-thunk';
-import { composeWithDevTools } from 'redux-devtools-extension';
+import { configureStore } from "@reduxjs/toolkit";
+import rootReducer from "./reducers";
 
-var store;
+let store;
 
-function initStore(initialState) {
-	store = createStore(
-		rootReducer,
-		composeWithDevTools(),
-		initialState,
-		applyMiddleware(thunk)
-	);
+function initStore(preloadedState) {
+  store = configureStore({
+    reducer: rootReducer,
+    preloadedState,
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware({
+        serializableCheck: false, // Legacy app might have non-serializable objects in state/actions
+      }),
+  });
 }
 
 export { store, initStore };

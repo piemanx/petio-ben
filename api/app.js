@@ -51,7 +51,7 @@ const { authRequired } = require("./middleware/auth");
 class Main {
   constructor() {
     if (cluster.isMaster) {
-      logger.log("info", `API: Petio API Version ${pjson.version}`);
+      logger.log("info", `API: BenFlix API Version ${pjson.version}`);
       logger.log("info", "API: API Starting");
 
       if (process.pkg) {
@@ -153,7 +153,7 @@ class Main {
       this.e.use("/batch", authRequired, batchRoute);
       this.e.get("*", function (req, res) {
         logger.log("warn", `API: Route not found ${req.url} | IP: ${req.ip}`);
-        res.status(404).send(`Petio API: route not found - ${req.url}`);
+        res.status(404).send(`BenFlix API: route not found - ${req.url}`);
       });
     }
   }
@@ -273,7 +273,7 @@ class Main {
           }
         }
         logger.log("verbose", "API: Attempting mongo connection");
-        await mongoose.connect(mongo + "/petio", {
+        await mongoose.connect(mongo + "/benflix", {
           socketTimeoutMS: 100,
         });
         mongoose.connection.close();
@@ -310,7 +310,7 @@ class Main {
       }
 
       let configData = {
-        DB_URL: db + "/petio",
+        DB_URL: db + "/benflix",
         tmdbApi: "1af5ad19a2d972a67cd27eb033979c4c",
         plexProtocol: server.protocol,
         plexIp: server.host,

@@ -34,7 +34,7 @@ export function login(user, cookie = false) {
   return new Promise((resolve, reject) => {
     let authToken = false;
     if (cookie) {
-      authToken = getCookie("petio_jwt");
+      authToken = getCookie("benflix_jwt");
     }
 
     api
@@ -48,25 +48,25 @@ export function login(user, cookie = false) {
             });
             resolve(data);
           } else {
-            deleteCookie("petio_jwt");
+            deleteCookie("benflix_jwt");
             reject("User not found");
             return;
           }
         } else {
-          deleteCookie("petio_jwt");
+          deleteCookie("benflix_jwt");
           reject("User not found");
         }
       })
       .catch((err) => {
         console.log(err.status);
-        deleteCookie("petio_jwt");
+        deleteCookie("benflix_jwt");
         reject("An error has occured");
       });
   });
 }
 
 export function logout() {
-  deleteCookie("petio_jwt");
+  deleteCookie("benflix_jwt");
   finalise({
     type: types.LOGOUT,
   });

@@ -23,7 +23,7 @@ router.post("/", async (req, res) => {
   } = req.body || { user: {} };
 
   if (!prefs) {
-    res.status(500).send("This Petio API is not setup");
+    res.status(500).send("This BenFlix API is not setup");
     return;
   }
 
@@ -92,7 +92,7 @@ function success(user, isAdmin = false, res) {
   user.password = null;
   const token = jwt.sign({ ...user, admin: isAdmin }, prefs.plexToken);
   res
-    .cookie("petio_jwt", token, {
+    .cookie("benflix_jwt", token, {
       maxAge: 2419200000,
     })
     .json({
@@ -123,9 +123,9 @@ function plexAuth(username, password) {
         method: "POST",
         json: true,
         headers: {
-          "X-Plex-Product": "Petio",
+          "X-Plex-Product": "BenFlix",
           "X-Plex-Platform-Version": "1.0",
-          "X-Plex-Device-Name": "Petio API",
+          "X-Plex-Device-Name": "BenFlix API",
           "X-Plex-Version": "1.0",
           "X-Plex-Client-Identifier": "067e602b-1e86-4739-900d-1abdf8f6da71",
           Authorization:

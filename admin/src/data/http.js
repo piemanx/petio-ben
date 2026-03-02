@@ -22,9 +22,9 @@ function getCookie(cname) {
 }
 
 function maybeGetAuthHeader() {
-  let petioJwt = getCookie("petio_jwt");
-  if (petioJwt) {
-    return { Authorization: `Bearer ${petioJwt}` };
+  let benflixJwt = getCookie("benflix_jwt");
+  if (benflixJwt) {
+    return { Authorization: `Bearer ${benflixJwt}` };
   } else {
     return {};
   }

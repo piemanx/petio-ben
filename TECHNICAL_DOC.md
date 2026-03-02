@@ -2,7 +2,7 @@
 
 ## Architecture Overview
 
-Petio is a request, review, and discovery companion app for Plex. The modernized architecture consists of:
+BenFlix is a request, review, and discovery companion app for Plex. The modernized architecture consists of:
 
 *   **Backend:** Node.js (Express) with Mongoose (MongoDB).
     *   **Entry Point:** `api/app.js`
@@ -12,7 +12,7 @@ Petio is a request, review, and discovery companion app for Plex. The modernized
     *   **State Management:** Redux (migrating to Toolkit patterns)
 *   **Admin:** React 18 Admin Dashboard built with Vite.
     *   **Location:** `admin/`
-*   **Orchestration:** `petio.js` serves as the main entry point, proxying API requests and serving static frontend assets in production.
+*   **Orchestration:** `benflix.js` serves as the main entry point, proxying API requests and serving static frontend assets in production.
 
 ## Docker Strategy
 
@@ -22,7 +22,7 @@ The project uses a **multi-stage Docker build** to optimize image size and build
 2.  **Runner:** A lightweight `node:20-slim` image that:
     *   Copies backend dependencies.
     *   Copies pre-built frontend artifacts (`frontend/build` and `admin/build`).
-    *   Runs the application using `node petio.js`.
+    *   Runs the application using `node benflix.js`.
 
 **Note:** Currently, frontend assets must be built locally (`npm run build` in `frontend/` and `admin/`) before building the Docker image due to execution permission restrictions in some Docker build environments.
 

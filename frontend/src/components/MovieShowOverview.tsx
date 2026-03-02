@@ -428,9 +428,9 @@ const MovieShowOverview: React.FC<MovieShowOverviewProps> = (props) => {
                 <span
                   className="desktop-only"
                   style={{ cursor: "help" }}
-                  title="Petio reviews are a combination of Petio users on this server and external user reviews."
+                  title="BenFlix reviews are a combination of BenFlix users on this server and external user reviews."
                 >
-                  Petio:{" "}
+                  BenFlix:{" "}
                 </span>
                 <span
                   className={`rating d-nm color-${

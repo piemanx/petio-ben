@@ -165,7 +165,7 @@ export default function Requests({ msg }) {
             </p>
             <p>
               <span className="request-status manual">No Status</span> - This
-              means the request cannot be tracked by Petio
+              means the request cannot be tracked by BenFlix
             </p>
             <p>
               <span className="request-status bad">Unavailable</span> - Currently

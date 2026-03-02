@@ -1,4 +1,4 @@
-## Petio Request Front End
+## BenFlix Request Front End
 
 React / Redux
 

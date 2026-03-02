@@ -126,11 +126,11 @@ class Login extends React.Component {
         // Move this to error message
         this.props.msg({
           message:
-            "There has been an error, Petio may be temporarily unavailable",
+            "There has been an error, BenFlix may be temporarily unavailable",
           type: "error",
         });
 
-        localStorage.removeItem("petio_jwt");
+        localStorage.removeItem("benflix_jwt");
       });
   }
 
@@ -151,7 +151,7 @@ class Login extends React.Component {
   }
 
   loginLocal() {
-    if (this.getCookie("petio_jwt")) {
+    if (this.getCookie("benflix_jwt")) {
       this.login("", false, true, true);
     }
   }
@@ -250,7 +250,7 @@ class Login extends React.Component {
                 <TmdbLogo />
               </a>
             </div>
-            <p className="powered-by">Petio Admin build {__COMMIT_HASH__}</p>
+            <p className="powered-by">BenFlix Admin build {__COMMIT_HASH__}</p>
           </>
         ) : (
           <div className="spinner">

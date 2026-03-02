@@ -183,7 +183,7 @@ class App extends React.Component {
         loginMsg: error,
         loading: false,
       });
-      localStorage.removeItem("petio_jwt");
+      localStorage.removeItem("benflix_jwt");
     }
   }
 
@@ -213,7 +213,7 @@ class App extends React.Component {
   }
 
   loginLocal() {
-    if (this.getCookie("petio_jwt")) {
+    if (this.getCookie("benflix_jwt")) {
       if (this.props.user.credentials) {
         this.login("", true);
       } else {
@@ -251,7 +251,7 @@ class App extends React.Component {
         login_type: parseInt(res.login_type),
       });
       if (res.config === false) {
-        this.msg({ message: "Petio is not setup redirecting", type: "error" });
+        this.msg({ message: "BenFlix is not setup redirecting", type: "error" });
         window.location.href = "/admin/";
       }
     } catch {
@@ -412,7 +412,7 @@ class App extends React.Component {
                   <TmdbLogo />
                 </a>
               </div>
-              <p className="powered-by">Petio build {pjson.version}</p>
+              <p className="powered-by">BenFlix build {pjson.version}</p>
             </>
           ) : (
             <div className="spinner">

@@ -43,11 +43,11 @@ class Wrapper {
     logger.log("info", `WRAPPER: Delaying start`);
     await delay(5000);
     if (cluster.isMaster) {
-      logger.log("info", `WRAPPER: Starting Petio wrapper`);
+      logger.log("info", `WRAPPER: Starting BenFlix wrapper`);
       logger.log("info", `WRAPPER: OS has ${numCPUs} CPU(s)`);
       if (numCPUs < 2)
         logger.warn(
-          "WRAPPER: Warning Petio Requires 2 CPU threads! Please allocate more resources!"
+          "WRAPPER: Warning BenFlix Requires 2 CPU threads! Please allocate more resources!"
         );
       let API = require("./api/app");
       // new API().init();
@@ -55,7 +55,7 @@ class Wrapper {
       process.on("uncaughtException", function (err) {
         if (err.code === "EADDRINUSE") {
           logger.error(
-            `Fatal Error: Port already in use ${err.port}. Petio may already be running or is in conflict with another service on the same port.`
+            `Fatal Error: Port already in use ${err.port}. BenFlix may already be running or is in conflict with another service on the same port.`
           );
         } else {
           logger.log({ level: "error", message: err });
@@ -73,7 +73,7 @@ class Wrapper {
         app.use(basePath, router);
         app.get("*", function (req, res) {
           logger.log("warn", `ROUTER: Not found - ${req.path} | IP: ${req.ip}`);
-          res.status(404).send(`Petio Router: not found - ${req.path}`);
+          res.status(404).send(`BenFlix Router: not found - ${req.path}`);
         });
         app.listen(7777);
       } catch (err) {

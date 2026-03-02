@@ -34,7 +34,7 @@ const Sidebar: React.FC = () => {
   return (
     <div className="sidebar--inner">
       <Link to="/" className="logo">
-        <p className="logo-text" title="Petio">
+        <p className="logo-text" title="BenFlix">
           Pet<span>io</span>
         </p>
       </Link>

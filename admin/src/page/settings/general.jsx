@@ -237,13 +237,13 @@ class General extends React.Component {
         <section>
           <p className="main-title mb--2">Base path</p>
           <p className="description">
-            A base path can be applied to serve petio from a subdirectory. Any
+            A base path can be applied to serve benflix from a subdirectory. Any
             specified base must not include a trailing slash and will be applied
-            to the end of the access URL. For example <code>/petio</code> would
-            become <code>localhost:7777/petio</code>
+            to the end of the access URL. For example <code>/benflix</code> would
+            become <code>localhost:7777/benflix</code>
             <br></br>
             <small>
-              Warning! This will require a restart of Petio to take effect.
+              Warning! This will require a restart of BenFlix to take effect.
             </small>
           </p>
           <input
@@ -261,7 +261,7 @@ class General extends React.Component {
         <section>
           <p className="main-title mb--2">User login</p>
           <p className="description">
-            Logging into the admin panel in Petio will always require a
+            Logging into the admin panel in BenFlix will always require a
             Username/Email &amp; Password, however the standard user panel can
             be customised for <strong>Fast Login</strong> (where a user only
             needs to provide their Username / Email) or{" "}

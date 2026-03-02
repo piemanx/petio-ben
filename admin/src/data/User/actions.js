@@ -32,7 +32,7 @@ export function login(user, pass = false, cookie = false, admin) {
       password = pass;
     let authToken = false;
     if (cookie) {
-      authToken = getCookie("petio_jwt");
+      authToken = getCookie("benflix_jwt");
     }
 
     api
@@ -50,12 +50,12 @@ export function login(user, pass = false, cookie = false, admin) {
             resolve(data);
           } else {
             resolve({ error: "User not found" });
-            deleteCookie("petio_jwt");
+            deleteCookie("benflix_jwt");
             return;
           }
         } else {
           resolve({ error: "User not found" });
-          deleteCookie("petio_jwt");
+          deleteCookie("benflix_jwt");
         }
       })
       .catch((err) => {
@@ -66,7 +66,7 @@ export function login(user, pass = false, cookie = false, admin) {
 }
 
 export function logout() {
-  deleteCookie("petio_jwt");
+  deleteCookie("benflix_jwt");
   finalise({
     type: types.LOGOUT,
   });

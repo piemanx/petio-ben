@@ -310,7 +310,7 @@ class Notifications extends React.Component {
                 {" "}
                 Less Secure Apps
               </a>{" "}
-              to allow Petio to send emails on your behalf.
+              to allow BenFlix to send emails on your behalf.
             </p>
 
             <button

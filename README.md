@@ -1,4 +1,4 @@
-# Petio 0.5.7 (Modernized)
+# BenFlix 0.5.7 (Modernized)
 
 <p align="center">
   <img src="https://img.shields.io/badge/Node.js-20-green?logo=node.js">
@@ -8,7 +8,7 @@
 
 <p align="center">
   <a href="https://discord.gg/bseGmrUd3N" target="_blank"><img src="https://img.shields.io/discord/722180802871427104?label=Discord"></a>
-  <a href="https://www.reddit.com/r/Petio/" target="_blank"><img src="https://img.shields.io/reddit/subreddit-subscribers/petio?label=Reddit"></a>
+  <a href="https://www.reddit.com/r/BenFlix/" target="_blank"><img src="https://img.shields.io/reddit/subreddit-subscribers/benflix?label=Reddit"></a>
 </p>
 
 Request, review and discover companion app for plex.
@@ -16,7 +16,7 @@ Request, review and discover companion app for plex.
 Allow your users to interact with media both on and off your server with this app. Available as a docker image and also as binaries. Features a React frontend utilizing Redux and a Node JS express API and MongoDb database.
 
 ## Modernization Status
-This repository has been modernized from the original Petio codebase.
+This repository has been modernized from the original BenFlix codebase.
 - **Runtime:** Updated to **Node.js 20** (LTS).
 - **Frontend:** Upgraded to **React 18** and migrated to **Vite** for faster builds.
 - **Architecture:** Key components refactored to **Functional Components** with Hooks.
@@ -29,8 +29,8 @@ This repository has been modernized from the original Petio codebase.
 The Docker image is now built using a multi-stage process. You can build it locally or pull it if available.
 
 ```bash
-docker build -t petio:latest .
-docker run -d -p 7777:7777 --name petio petio:latest
+docker build -t benflix:latest .
+docker run -d -p 7777:7777 --name benflix benflix:latest
 ```
 
 ### 2. Local Development

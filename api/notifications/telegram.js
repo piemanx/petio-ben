@@ -44,7 +44,7 @@ class Telegram {
       };
     }
     logger.info("Telegram: Sending test message");
-    let text = this.buildText("Petio Test");
+    let text = this.buildText("BenFlix Test");
     let test = await this.postMessage(text);
     if (!test) {
       logger.warn("Telegram: Test Failed");

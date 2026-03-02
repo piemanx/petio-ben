@@ -27,8 +27,8 @@ class Discord {
   buildBody(content = null, data = null) {
     let body = {
       content: content,
-      username: "Petio",
-      avatar_url: "https://petio.tv/favicon.png",
+      username: "BenFlix",
+      avatar_url: "https://benflix.tv/favicon.png",
     };
     if (data) {
       body.embeds = [
@@ -43,8 +43,8 @@ class Discord {
             },
           ],
           footer: {
-            text: "Powered by Petio",
-            icon_url: "https://petio.tv/favicon.png",
+            text: "Powered by BenFlix",
+            icon_url: "https://benflix.tv/favicon.png",
           },
           thumbnail: {
             url: data.image,
@@ -65,7 +65,7 @@ class Discord {
       };
     }
     logger.info("DSCRD: Sending test webhook");
-    let body = this.buildBody("Petio Test");
+    let body = this.buildBody("BenFlix Test");
     let test = await this.postHook(this.webhook, body);
     if (!test) {
       logger.warn("DSCRD: Test Failed");

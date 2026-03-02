@@ -40,7 +40,7 @@ logger.log("verbose", `ROUTER: API proxy setup - Proxying /api -> /`);
 
 router.get("*", function (req, res) {
   logger.log("warn", `ROUTER: Not found - ${req.path} | IP: ${req.ip}`);
-  res.status(404).send(`Petio Router: not found - ${req.path}`);
+  res.status(404).send(`BenFlix Router: not found - ${req.path}`);
 });
 
 module.exports = router;

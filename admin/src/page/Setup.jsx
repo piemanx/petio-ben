@@ -631,7 +631,7 @@ class Setup extends React.Component {
           </a>
         </div>
         <p className="setup--version">
-          Petio Admin build (alpha) {pjson.version}
+          Petio Admin build (alpha) {__COMMIT_HASH__}
         </p>
       </div>
     );

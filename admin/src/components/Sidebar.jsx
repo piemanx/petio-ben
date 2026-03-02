@@ -152,7 +152,7 @@ class Sidebar extends React.Component {
             </div>
           </a>
         </div>
-        <p className="menu--version">version {pjson.version}</p>
+        <p className="menu--version">version {__COMMIT_HASH__}</p>
       </div>
     );
   }

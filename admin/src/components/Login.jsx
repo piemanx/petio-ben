@@ -250,7 +250,7 @@ class Login extends React.Component {
                 <TmdbLogo />
               </a>
             </div>
-            <p className="powered-by">Petio Admin build {pjson.version}</p>
+            <p className="powered-by">Petio Admin build {__COMMIT_HASH__}</p>
           </>
         ) : (
           <div className="spinner">
